@@ -6,8 +6,8 @@ from decouple import config
 
 
 URI = config("URI")
-PASSWORD = "passw0rd"
-USER = "neo4j"
+PASSWORD = config("PASSWORD")
+USER = config("USER")
 
 app = Flask(__name__)
 graphBuilder = GraphHandler(uri=URI, user=USER, password=PASSWORD)
@@ -66,5 +66,5 @@ def delete_node_edge(edgeId: str):
     return json.dumps({"message": response})
 
 
-# if __name__ == "__main__":
-# app.run(debug=True)
+if __name__ == "__main__":
+    app.run(debug=True)
