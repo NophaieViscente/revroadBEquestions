@@ -5,17 +5,18 @@ from questionsHandler import GraphHandler
 from decouple import config
 
 
-URI = config("URI")
-PASSWORD = config("PASSWORD")
-USER = config("USER")
+NEO4J_URI = config("NEO4J_URI")
+NEO4J_PASSWORD = config("NEO4J_PASSWORD")
+NEO4J_USR = config("NEO4J_USR")
 
 app = Flask(__name__)
-graphBuilder = GraphHandler(uri=URI, user=USER, password=PASSWORD)
+graphBuilder = GraphHandler(uri=NEO4J_URI, user=NEO4J_USR, password=NEO4J_PASSWORD)
 CORS(app=app)
 
 
 @app.route("/insert-question", methods=["POST"])
 def add_question():
+    print(NEO4J_USR, NEO4J_PASSWORD, NEO4J_URI)
     request_data = request.get_json()
     question_id = request_data.get("id")
     response = graphBuilder.create_node(id=question_id)
@@ -63,6 +64,12 @@ def update_edge_question():
 @app.route("/delete-edge/<edgeId>", methods=["DELETE"])
 def delete_node_edge(edgeId: str):
     response = graphBuilder.delete_edge_node(edgeId=edgeId)
+    return json.dumps({"message": response})
+
+
+@app.route("/delete-node-relationships/<id>", methods=["DELETE"])
+def delete_node_relationships(id: str):
+    response = graphBuilder.delete_node_relationships(source=id)
     return json.dumps({"message": response})
 
 

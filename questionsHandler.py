@@ -168,18 +168,35 @@ class GraphHandler:
         str
             Cypher query for deleting a relationship.
         """
-        source = kwargs.get("source")
-        target = kwargs.get("target")
         edgeId = kwargs.get("edgeId")
 
-        # query = f"""MATCH (n:QUESTION)-[r:NEXT]-(m:QUESTION)
-        # WHERE n.id_question = '{source}' AND m.id_question = '{target}'
-        # DELETE r
-        # """
         query = f"""MATCH (n:QUESTION)-[r:NEXT]-(m:QUESTION)
         WHERE r.edgeId = '{edgeId}'
         DELETE r
         """
+        return query
+
+    @classmethod
+    def __format_query_delete_all_relationship_from_source__(cls, **kwargs) -> str:
+        """
+        Formats a Cypher query to delete a relationship between nodes in the Neo4j database.
+
+        Parameters
+        ----------
+        **kwargs
+            Additional keyword arguments.
+
+        Returns
+        -------
+        str
+            Cypher query for deleting a relationship.
+        """
+        source = kwargs.get("source")
+
+        query = f"""MATCH (n:QUESTION)-[r:NEXT]->() 
+        WHERE n.id_question = '{source}'
+        DELETE r"""
+
         return query
 
     @classmethod
@@ -343,6 +360,15 @@ class GraphHandler:
         with self.driver.session() as session:
             response = session.execute_write(
                 self._run_query, self.__format_query_delete_relationship__(**kwargs)
+            )
+            return f">>> Deleted relationship {kwargs['edgeId']}"
+
+    def delete_node_relationships(self, **kwargs) -> str:
+
+        with self.driver.session() as session:
+            response = session.execute_write(
+                self._run_query,
+                self.__format_query_delete_all_relationship_from_source__(**kwargs),
             )
             return f">>> Deleted relationship {kwargs['edgeId']}"
 
