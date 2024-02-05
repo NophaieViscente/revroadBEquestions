@@ -321,7 +321,10 @@ class GraphHandler:
                 self._run_query, self.__format_query_search_next_node__(**kwargs)
             )
 
-            return response[0]["m.id_question"]
+            try:
+                return response[0]["m.id_question"]
+            except:
+                return None
 
     def delete_node(self, **kwargs) -> str:
         """
