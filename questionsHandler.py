@@ -370,7 +370,7 @@ class GraphHandler:
                 self._run_query,
                 self.__format_query_delete_all_relationship_from_source__(**kwargs),
             )
-            return f">>> Deleted relationship {kwargs['edgeId']}"
+            return f">>> Deleted relationships from {kwargs['source']}"
 
     def delete_all_nodes(self) -> str:
         """
